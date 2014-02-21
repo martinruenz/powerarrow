@@ -42,19 +42,22 @@ end
 
 --{{---| Theme | -------------------------------------
 
--- Todo:  Please change the "ep" to your $USER
-config_dir = ("/home/ep/.config/awesome/")
+config_dir = ("/home/martin/.config/awesome/")
 themes_dir = (config_dir .. "/powerarrowf")
 
 beautiful.init(themes_dir .. "/theme.lua")
 
 -- This is used later as the default terminal, browser and editor to run.
-terminal = "termite"
+terminal = "x-terminal-emulator"
 editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
-browser = "chromium"
+browser = "firefox"
 
 font = "Inconsolata 11"
+
+-- Hardware:
+wlan_device = "wlan0"
+cable_device = ""
 
 -- {{ These are the power arrow dividers/separators }} --
 arr1 = wibox.widget.imagebox()
@@ -108,7 +111,7 @@ end
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3}, s, layouts[1])
+    tags[s] = awful.tag({ 1, 2, "coding", "inet", "mail", "-"}, s, layouts[1])
 end
 -- }}}
 
@@ -146,10 +149,11 @@ clockicon:set_image(beautiful.clock)
 netwidget = wibox.widget.textbox()
 vicious.register(netwidget, vicious.widgets.net, function(widget, args)
     local interface = ""
-    if args["{wlp2s0 carrier}"] == 1 then
-        interface = "wlp2s0"
-    elseif args["{enp0s25 carrier}"] == 1 then
-        interface = "enp0s25"
+    ---if args["{wlp2s0 carrier}"] == 1 then
+    if args["{"..wlan_device.." carrier}"] == 1 then
+        interface = wlan_device
+    ---elseif args["{enp0s25 carrier}"] == 1 then
+    ---    interface = "enp0s25"
     else
         return ""
     end
@@ -166,7 +170,7 @@ vicious.register(neticon, vicious.widgets.wifi, function(widget, args)
     else
         neticon:set_image(beautiful.netlow)
     end
-end, 120, 'wlp2s0')
+end, 120, wlan_device)
 
 
 --{{ Battery Widget }} --
@@ -174,14 +178,14 @@ baticon = wibox.widget.imagebox()
 baticon:set_image(beautiful.baticon)
 
 batwidget = wibox.widget.textbox()
-vicious.register( batwidget, vicious.widgets.bat, '<span background="#92B0A0" font="Inconsolata 11"><span font="Inconsolata 11" color="#FFFFFF" background="#92B0A0">$1$2% </span></span>', 30, "BAT0" )
+vicious.register( batwidget, vicious.widgets.bat, '<span background="#92B0A0" font="Inconsolata 11"><span font="Inconsolata 11" color="#FFFFFF" background="#92B0A0">$1$2% </span></span>', 5, "BAT1" )
 
 
 --{{---| File Size widget |-----
 fswidget = wibox.widget.textbox()
 
 vicious.register(fswidget, vicious.widgets.fs,
-'<span background="#D0785D" font="Inconsolata 11"> <span font="Inconsolata 11" color="#EEEEEE">${/home used_p}/${/home avail_p} GB </span></span>', 800)
+'<span background="#D0785D" font="Inconsolata 11"> <span font="Inconsolata 11" color="#EEEEEE">${/home/martin used_gb}/${/home/martin avail_gb} GB </span></span>', 800)
 
 fsicon = wibox.widget.imagebox()
 fsicon:set_image(beautiful.fsicon)
@@ -189,7 +193,7 @@ fsicon:set_image(beautiful.fsicon)
 ----{{--| Volume / volume icon |----------
 volume = wibox.widget.textbox()
 vicious.register(volume, vicious.widgets.volume,
-'<span background="#4B3B51" font="Inconsolata 11"><span font="Inconsolata 11" color="#EEEEEE"> Vol:$1 </span></span>', 0.3, "Master")
+'<span background="#4B3B51" font="Inconsolata 11"><span font="Inconsolata 11" color="#EEEEEE"> Vol:$1%</span></span>', 0.3, "Master -c 1")
 
 volumeicon = wibox.widget.imagebox()
 vicious.register(volumeicon, vicious.widgets.volume, function(widget, args)
@@ -205,7 +209,7 @@ vicious.register(volumeicon, vicious.widgets.volume, function(widget, args)
         volumeicon:set_image(beautiful.vollow)
     end
 
-end, 0.3, "Master")
+end, 0.3, 'Master -c 1')
 
 --{{---| CPU / sensors widget |-----------
 cpuwidget = wibox.widget.textbox()
@@ -236,7 +240,7 @@ end, 15)
 
 -- to make GMail pop up when pressed:
 mailicon:buttons(awful.util.table.join(awful.button({ }, 1,
-function () awful.util.spawn_with_shell(browser .. " gmail.com") end)))
+function () awful.util.spawn_with_shell("thunderbird") end)))
 
 
 -- Create a wibox for each screen and add it
@@ -385,9 +389,9 @@ awful.key({ "Control", "Shift"}, "b", function() awful.util.spawn("/opt/sublime-
 
 -- {{ Volume Control }} --
 
-awful.key({     }, "XF86AudioRaiseVolume", function() awful.util.spawn("amixer set Master 5%+", false) end),
-awful.key({     }, "XF86AudioLowerVolume", function() awful.util.spawn("amixer set Master 5%-", false) end),
-awful.key({     }, "XF86AudioMute", function() awful.util.spawn("amixer set Master toggle", false) end),
+awful.key({     }, "XF86AudioRaiseVolume", function() awful.util.spawn("amixer -D pulse sset Master 5%+", false) end),
+awful.key({     }, "XF86AudioLowerVolume", function() awful.util.spawn("amixer -D pulse sset Master 5%-", false) end),
+awful.key({     }, "XF86AudioMute", function() awful.util.spawn("amixer -D pulse sset Master toggle", false) end),
 
 -- {{ Vim-like controls:
 

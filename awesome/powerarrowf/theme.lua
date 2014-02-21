@@ -5,7 +5,7 @@
 theme = {}
 
 -- Todo:  Change the $USER to yourself.
-pathToConfig = "/home/ep/.config/awesome/"
+pathToConfig = "/home/martin/.config/awesome/"
 
 theme.font          = "sans 8"
 
@@ -71,7 +71,8 @@ theme.titlebar_maximized_button_focus_inactive  = "/usr/share/awesome/themes/def
 theme.titlebar_maximized_button_normal_active = "/usr/share/awesome/themes/default/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_active  = "/usr/share/awesome/themes/default/titlebar/maximized_focus_active.png"
 
-theme.wallpaper = pathToConfig .. "powerarrowf/candy_bean_wallpaper.jpg"
+--theme.wallpaper = pathToConfig .. "powerarrowf/candy_bean_wallpaper.jpg"
+theme.wallpaper = pathToConfig .. "powerarrowf/original_wallpaper.jpg"
 
 -- You can use your own layout icons like this:
 theme.layout_floating  = pathToConfig .. "powerarrowf/layouts/floating.png"
